@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { privatePost, publicGet } from "../../services/apiCaller";
 
 // Define types for the post data, batches, and errors
@@ -19,7 +19,7 @@ interface TuitionPostState {
   posts: {
     status: string;
     data: Post[]; // Array of Post objects
-    error: any;   // You can type this better if the error structure is known
+    error: string | null; // Error should be string or null
     message: string;
   };
   batches: any[];  // Replace `any[]` with actual batch structure if known
@@ -31,7 +31,7 @@ interface TuitionPostState {
 
 // Initial state for the slice
 const initialState: TuitionPostState = {
-  posts: { status: "", data: [], error: {}, message: "" },
+  posts: { status: "", data: [], error: null, message: "" },
   batches: [],
   uploadPost: [],
   isLoading: false,
@@ -39,21 +39,38 @@ const initialState: TuitionPostState = {
   success: false,
 };
 
-// AsyncThunk for fetching tuition posts
+// AsyncThunk for fetching tuition posts with filters
 export const fetchTutionPost = createAsyncThunk(
-  "fetch/tuition/post",
-  async () => {
-    const response = await publicGet("/teacher/tuition/post");
-    return response.data; // Adjust this based on the actual structure of the response
+  'tuitions/fetchTutionPost',
+  async (filters: { teacherName: string; versityName: string; city: string }, thunkAPI) => {
+    try {
+      const queryString = new URLSearchParams(filters).toString();
+      const response = await publicGet(`/teacher/tuition/post?${queryString}`);
+      return response.data; // Return data for the fulfilled case
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
+      if (axiosError.response) {
+        return thunkAPI.rejectWithValue(axiosError.response.data.message);
+      }
+      return thunkAPI.rejectWithValue("An unknown error occurred.");
+    }
   }
 );
 
 // AsyncThunk for fetching tuition batches
 export const fetchTutionBatch = createAsyncThunk(
   "fetch/tuition/batch",
-  async () => {
-    const response = await publicGet("/batch/all/batches");
-    return response.data; // Adjust this based on the actual structure of the response
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await publicGet("/batch/all/batches");
+      return response.data;
+    } catch (err) {
+      const axiosError = err as AxiosError<ErrorResponse>;
+      if (axiosError.response) {
+        return rejectWithValue(axiosError.response.data.message);
+      }
+      return rejectWithValue("An unknown error occurred.");
+    }
   }
 );
 
@@ -66,11 +83,11 @@ export const createTutionPost = createAsyncThunk(
   ) => {
     try {
       const response = await privatePost("/teacher/tuition/post", token, data);
-      return response.data; // Adjust this based on the actual structure of the response
+      return response.data;
     } catch (err) {
-      const axiosError = err as AxiosError<ErrorResponse>; // Define type for error response
+      const axiosError = err as AxiosError<ErrorResponse>;
       if (axiosError.response) {
-        return rejectWithValue(axiosError.response.data.message); // Access typed error message
+        return rejectWithValue(axiosError.response.data.message);
       }
       return rejectWithValue("An unknown error occurred.");
     }
@@ -84,54 +101,68 @@ export const tuitionPostSlice = createSlice({
   reducers: {
     updatePostClean: (state) => {
       state.success = false;
+      state.uploadPost = [];
     },
   },
   extraReducers: (builder) => {
     builder
+      // Fetch tuition posts with filters
       .addCase(fetchTutionPost.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
+        state.posts.error = null;
       })
-      .addCase(fetchTutionPost.fulfilled, (state, action) => {
-        if (action.payload.length === 0) {
-          state.posts = { status: "success", data: [], error: {}, message: "No data found" };
-        } else {
-          state.posts = { status: "success", data: action.payload, error: {}, message: "Posts fetched successfully" };
-        }
+      .addCase(fetchTutionPost.fulfilled, (state, action: PayloadAction<Post[]>) => {
         state.isLoading = false;
+        state.posts = {
+          status: "success",
+          data: action.payload,
+          error: null,
+          message: action.payload.length > 0 ? "Posts fetched successfully" : "No data found",
+        };
       })
-      .addCase(fetchTutionPost.rejected, (state, action) => {
+      .addCase(fetchTutionPost.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.posts = { status: "", data: [], error: {}, message: action.payload as string || "An error occurred" };
         state.isError = true;
+        state.posts = {
+          status: "failed",
+          data: [],
+          error: action.payload || "An error occurred",
+          message: "Failed to fetch posts",
+        };
       })
+
+      // Fetch tuition batches
       .addCase(fetchTutionBatch.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(fetchTutionBatch.fulfilled, (state, action) => {
+      .addCase(fetchTutionBatch.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.isLoading = false;
         state.batches = action.payload;
-        state.isLoading = false;
       })
-      .addCase(fetchTutionBatch.rejected, (state) => {
+      .addCase(fetchTutionBatch.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.batches = [];
         state.isError = true;
+        state.batches = [];
+        state.posts.error = action.payload || "Failed to fetch batches";
       })
+
+      // Create tuition post
       .addCase(createTutionPost.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(createTutionPost.fulfilled, (state, action) => {
+      .addCase(createTutionPost.fulfilled, (state, action: PayloadAction<any>) => {
         state.uploadPost = action.payload;
         state.isLoading = false;
         state.success = true;
       })
-      .addCase(createTutionPost.rejected, (state, action) => {
+      .addCase(createTutionPost.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.uploadPost = [];
         state.isError = true;
-        state.posts.error = action.payload as string || "An error occurred";
+        state.uploadPost = [];
+        state.posts.error = action.payload || "Failed to create post";
       });
   },
 });

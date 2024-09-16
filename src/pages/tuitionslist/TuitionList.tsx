@@ -8,7 +8,8 @@ const TuitionList = () => {
     const { posts, isLoading, isError } = useSelector((state: RootState) => state.tuitions);
 
     useEffect(() => {
-        dispatch(fetchTutionPost());
+        // Provide default filters or an empty object
+        dispatch(fetchTutionPost({ teacherName: '', versityName: '', city: '' }));
     }, [dispatch]);
 
     // Skeleton loader for the posts
