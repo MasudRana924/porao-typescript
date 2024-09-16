@@ -42,7 +42,7 @@ const initialState: TuitionPostState = {
 // AsyncThunk for fetching tuition posts with filters
 export const fetchTutionPost = createAsyncThunk(
   'tuitions/fetchTutionPost',
-  async (filters: { teacherName: string; versityName: string; city: string }, thunkAPI) => {
+  async (filters: { teacherName: string; versityName: string; city: string,area: string }, thunkAPI) => {
     try {
       const queryString = new URLSearchParams(filters).toString();
       const response = await publicGet(`/teacher/tuition/post?${queryString}`);

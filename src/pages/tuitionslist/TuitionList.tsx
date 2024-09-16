@@ -1,17 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect} from 'react';
 import { AppDispatch, RootState } from "../../features/store";
 import { fetchTutionPost } from "../../features/tuition/tuitionsSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
 const TuitionList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { posts, isLoading, isError } = useSelector((state: RootState) => state.tuitions);
-
+    const { posts, isLoading, isError } = useSelector((state: RootState) => state.tuitions)
     useEffect(() => {
-        // Provide default filters or an empty object
-        dispatch(fetchTutionPost({ teacherName: '', versityName: '', city: '' }));
+        // Fetch all data initially
+        dispatch(fetchTutionPost({ teacherName: '', versityName: '', city: '',area:'' }));
     }, [dispatch]);
-
     // Skeleton loader for the posts
     const renderSkeletons = () => {
         return Array(8).fill(0).map((_, index) => (
