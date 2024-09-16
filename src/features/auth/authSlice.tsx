@@ -5,6 +5,14 @@ import { privatePutFile, publicPost } from "../../services/apiCaller";
 // Define types for responses and payloads
 interface User {
   token?: string;
+  image?: string;
+  name?: string;
+  phoneNumber?: string;
+  email?: string;
+  address?: string;
+  standard?: string;
+  gender?: string;
+  institution?: string;
   // Add other user properties as needed
 }
 

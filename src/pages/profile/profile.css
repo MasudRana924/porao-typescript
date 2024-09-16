@@ -1,0 +1,27 @@
+.image-section label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px dotted black;
+    background-color: black;
+    color:white;
+    border-radius: 20px;
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    font-size: large;
+     margin-top: 130px;
+     position: relative;
+     margin-left: -40px;
+}
+
+label span {
+    font-weight: lighter;
+    font-size: small;
+    padding-top: 0.5rem;
+}
+
+.image-section input {
+    display: none;
+}

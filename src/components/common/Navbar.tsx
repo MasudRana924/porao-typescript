@@ -134,7 +134,7 @@ console.log("isAuthenticated",isAuthenticated)
                 alignItems: "center",
               }}
             >
-              {!isAuthenticated && (
+              {/* {!isAuthenticated && (
                 <>
                   <Button
                     color="primary"
@@ -150,12 +150,56 @@ console.log("isAuthenticated",isAuthenticated)
                     variant="text"
                     size="small"
                     component={Link}
-                    to="/register"
+                    to="/student/register"
                   >
                     Sign up
                   </Button>
                 </>
-              )}
+              )} */}
+              {
+                isAuthenticated ? (
+                  <>
+                     <Button
+                      color="primary"
+                      variant="text"
+                      size="small"
+                      component={Link}
+                      to="/student/profle"
+                    >
+                      Profile
+                    </Button>
+                    <Button
+                      color="warning"
+                      variant="text"
+                      size="small"
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ):(
+                  <>
+                   
+                    <Button
+                      color="primary"
+                      variant="text"
+                      size="small"
+                      component={Link}
+                      to="/login"
+                    >
+                      Sign in
+                    </Button>
+                    <Button
+                      color="primary"
+                      variant="text"
+                      size="small"
+                      component={Link}
+                      to="/student/register"
+                    >
+                      Logout
+                    </Button>
+                  </>
+                )
+              }
             </Box>
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button

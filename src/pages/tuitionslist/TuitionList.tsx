@@ -40,7 +40,7 @@ const TuitionList = () => {
 
     if (isLoading) {
         return (
-            <div className="w-3/4 mx-auto mt-4 lg:mt-0 sm:px-6 sm:py-24 lg:max-w-7xl">
+            <div className="w-3/4 mx-auto  lg:mt-0 sm:px-6 sm:py-24 lg:max-w-7xl">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     {renderSkeletons()}
                 </div>

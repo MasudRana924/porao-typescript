@@ -5,6 +5,7 @@ import { styled, Box } from '@mui/material';
 import { Footer } from '../../components/common/Footer';
 import MainHome from './MainHome';
 import TuitionList from '../tuitionslist/TuitionList';
+import Stats from '../stats/Stats';
 
 const MainWrapper = styled('div')(() => ({
     display: 'flex',
@@ -44,11 +45,12 @@ const HomeLayout = () => {
                     sx={{
                         minHeight: 'calc(100vh - 170px)',
                         pt: { xs: 10, sm: 15 },
-                        pb: { xs: 8, sm: 12 },
+                        // pb: { xs: 8, sm: 12 },
                     }}
                 >
                     <MainHome />
                     <TuitionList />
+                    <Stats/>
                 </Box>
                 <Footer />
             </PageWrapper>

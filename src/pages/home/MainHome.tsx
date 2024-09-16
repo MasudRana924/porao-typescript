@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import DistrictSelect from '../../components/form/DistrictSelect';
 
-import { AppDispatch, RootState } from "../../features/store";
-import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch} from "../../features/store";
+import { useDispatch } from 'react-redux';
 import { fetchTutionPost } from '../../features/tuition/tuitionsSlice';
 
 const MainHome = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [teacherName, setTeacherName] = useState('');
-  const [area, setArea] = useState('');
-  const [versityName, setVersityName] = useState('');
-  const [city, setCity] = useState('');
+  const [teacherName, setTeacherName] = useState<string>('');
+  const [area, setArea] = useState<string>('');
+  const [versityName, setVersityName] = useState<string>('');
+  const [city, setCity] = useState<string>('');
   const handleSearch = () => {
     dispatch(fetchTutionPost({ teacherName, versityName, city,area }));
   };
@@ -39,21 +39,21 @@ const MainHome = () => {
           placeholder="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0"
+          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0 outline-none"
         />
         <input
           type="text"
           placeholder="Area"
           value={area}
           onChange={(e) => setArea(e.target.value)}
-          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0 "
+          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0 outline-none"
         />
         <input
           type="text"
           placeholder="Versity Name"
           value={versityName}
           onChange={(e) => setVersityName(e.target.value)}
-          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0"
+          className="border rounded-md p-2 w-full h-12 mt-2 lg:mt-0 outline-none"
         />
 
         <button
