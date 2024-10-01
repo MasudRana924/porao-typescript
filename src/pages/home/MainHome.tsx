@@ -15,7 +15,7 @@ const MainHome = () => {
     dispatch(fetchTutionPost({ teacherName, versityName, city,area }));
   };
   return (
-    <div className='w-3/4 lg:w-3/4 xl:w-2/4 mx-auto border border-white shadow-md bg-white rounded-md lg:h-60 p-6'>
+    <div className='w-3/4  lg:w-3/4 xl:w-2/4 mx-auto border border-white shadow-md bg-white rounded-md lg:h-60 p-6'>
       <p className='mb-2 font-medium text-xl'>Filter</p>
       <hr />
       <div className=" mt-4 flex gap-2 lg:m-4">
